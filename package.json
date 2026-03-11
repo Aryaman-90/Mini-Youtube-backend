@@ -1,0 +1,20 @@
+{
+  "name": "chai-or-backend",
+  "version": "1.0.0",
+  "description": "a backend practice",
+  "keywords": [
+    "javascript",
+    "node",
+    "js",
+    "express",
+    "mongo",
+    "db"
+  ],
+  "license": "ISC",
+  "author": "Aryaman Sharma",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
