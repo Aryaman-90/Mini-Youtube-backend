@@ -4,6 +4,7 @@ import { User } from "../models/user.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -129,8 +130,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined,
+      $unset: {
+        refreshToken: 1,
       },
     },
     {
@@ -174,9 +175,14 @@ const refreshToken = asyncHandler(async (req, res) => {
     const { accessToken, newRefreshToken } =
       await generateAccessAndRefreshTokens(user._id);
 
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
     return res
       .status(200)
-      .cookie("accesstoken", accessToken, options)
+      .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", newRefreshToken, options)
       .json(
         new ApiResponse(
@@ -374,15 +380,17 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
       {
         $match: {
           _id: new mongoose.Types.ObjectId(req.user._id)
-        },
+        }
+      },
+      {
         $lookup: {
-          from : "Videos",
+          from: "Videos",
           localField: "watchHistory",
           foreignField: "_id",
           as: "watchHistoryVideos",
           pipeline: [
             {
-               $lookup: {
+              $lookup: {
                 from: "users",
                 localField: "owner",
                 foreignField: "_id",
@@ -394,7 +402,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
                     avatar: 1
                   }
                 }]
-               }
+              }
             },
             {
               $addFields: {
@@ -405,8 +413,6 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
             }
           ]
         }
-
-
       }
     ])
 

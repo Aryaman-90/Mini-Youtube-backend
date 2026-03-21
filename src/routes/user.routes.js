@@ -3,13 +3,14 @@ import {
   loginUser,
   registerUser,
   logoutUser,
-  refreshAccessToken,
+  refreshToken,
   changeCurrentPassword,
   getCuurentUser,
   updateAccountDetails,
   updateUserAvatar,
   updateUserCoverImage,
   getUserChannelProfile,
+  getWatchHistory
 } from "../controllers/user.controller.js";
 const router = Router();
 import { upload } from "../middlewares/multer.middleware.js";
@@ -34,7 +35,7 @@ router.route("/login").post(loginUser);
 
 //secured routes
 router.route("/logout").post(verifyJWT, logoutUser);
-router.route("/refresh-token").get(verifyJWT, refreshAccessToken);
+router.route("/refresh-token").get(verifyJWT, refreshToken);
 router.route("/change-password").post(verifyJWT, changeCurrentPassword);
 router.route("/current-user").get(verifyJWT, getCuurentUser);
 router.route("/update-account").put(verifyJWT, updateAccountDetails);
